@@ -288,12 +288,12 @@ class GoogleFitWeightSensor(GoogleFitSensor):
     @property
     def unit_of_measurement(self):
         """Returns the unit of measurement."""
-        return const.MASS_KILOGRAMS
+        return const.MASS_POUNDS
 
     @property
     def icon(self):
         """Return the icon."""
-        return 'mdi:weight-kilogram'
+        return 'mdi:weight-pound'
 
     @property
     def _name_suffix(self):
@@ -326,7 +326,7 @@ class GoogleFitWeightSensor(GoogleFitSensor):
                 weight = point_value[0].get('fpVal')
                 if not weight:
                     continue
-                weight = round(weight, 2)
+                weight = round(weight* 2.20462262185, 2) #Convert to pounds while rounding
                 last_update_milis = int(datapoint.get('modifiedTimeMillis', 0))
                 if not last_update_milis:
                     continue
@@ -349,7 +349,7 @@ class GoogleFitHeightSensor(GoogleFitSensor):
     @property
     def unit_of_measurement(self):
         """Returns the unit of measurement."""
-        return const.LENGTH_CENTIMETERS
+        return const.LENGTH_FEET
 
     @property
     def icon(self):
@@ -384,7 +384,7 @@ class GoogleFitHeightSensor(GoogleFitSensor):
                 height = point_value[0].get('fpVal')
                 if not height:
                     continue
-                height = round(height * 100, 2)
+                height = round(height * 39.370/12, 2)
                 last_update_milis = int(datapoint.get('modifiedTimeMillis', 0))
                 if not last_update_milis:
                     continue
@@ -574,7 +574,7 @@ class GoogleFitDistanceSensor(GoogleFitSensor):
     @property
     def unit_of_measurement(self):
         """Returns the unit of measurement."""
-        return const.LENGTH_KILOMETERS
+        return const.LENGTH_MILES
 
     @property
     def icon(self):
@@ -590,7 +590,7 @@ class GoogleFitDistanceSensor(GoogleFitSensor):
                 values.append(point['value'][0]['fpVal'])
 
         self._last_updated = time.time()
-        self._state = round(sum(values) / 1000, 2)
+        self._state = round(sum(values) * 0.000621371, 2)
         _LOGGER.debug("Distance %s", self._state)
         self._attributes = {}
 

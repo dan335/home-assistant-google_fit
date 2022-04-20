@@ -60,6 +60,8 @@ MOVE_TIME = 'move time'
 CALORIES = 'calories'
 SLEEP = 'sleep'
 HEARTRATE = 'heart rate'
+BP_SYS = 'blood pressure SYS'
+BP_DIA = 'blood pressure DIA'
 
 # Endpoint scopes required for the sensor.
 # Read more: https://developers.google.com/fit/rest/v1/authorization
@@ -71,6 +73,7 @@ SCOPES = ['https://www.googleapis.com/auth/fitness.activity.read',
     'https://www.googleapis.com/auth/fitness.location.read',
     'https://www.googleapis.com/auth/fitness.nutrition.read',
     'https://www.googleapis.com/auth/fitness.sleep.read',
+    'https://www.googleapis.com/auth/fitness.blood_pressure.read',
     ]
 
 def _today_dataset_start():
@@ -184,6 +187,8 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
         GoogleFitSleepSensor(client, name),
         GoogleFitMoveTimeSensor(client, name),
         GoogleFitCaloriesSensor(client, name),
+        GoogleFitBloodPresureSysSensor(client, name),
+        GoogleFitBloodPresureDiaSensor(client, name),
         GoogleFitDistanceSensor(client, name)], True)
 
 
@@ -662,3 +667,66 @@ class GoogleFitSleepSensor(GoogleFitSensor):
             self._state = ""
             self._attributes = {}
             self._last_updated = time.time()
+
+class GoogleFitBloodPresureSysSensor(GoogleFitSensor):
+    DATA_SOURCE = "derived:com.google.blood_pressure:com.google.android.gms:merged"
+
+    @property
+    def _name_suffix(self):
+        """Returns the name suffix of the sensor."""
+        return BP_SYS
+
+    @property
+    def unit_of_measurement(self):
+        """Returns the unit of measurement."""
+        return "mmHg"
+
+    @property
+    def icon(self):
+        """Return the icon."""
+        return 'mdi:water-circle'
+
+    @util.Throttle(MIN_TIME_BETWEEN_SCANS, MIN_TIME_BETWEEN_UPDATES)
+    def update(self):
+        """Extracts the relevant data points for from the Fitness API."""
+        value = 0
+        for point in self._get_dataset(self.DATA_SOURCE)["point"]:
+            if int(point["startTimeNanos"]) > _today_dataset_start():
+                value = point['value'][0]['fpVal']
+
+        self._last_updated = time.time()
+        self._state = value
+        _LOGGER.debug("Blood pressure SYS  %s", self._state)
+        self._attributes = {}
+
+
+class GoogleFitBloodPresureDiaSensor(GoogleFitSensor):
+    DATA_SOURCE = "derived:com.google.blood_pressure:com.google.android.gms:merged"
+
+    @property
+    def _name_suffix(self):
+        """Returns the name suffix of the sensor."""
+        return BP_DIA
+
+    @property
+    def unit_of_measurement(self):
+        """Returns the unit of measurement."""
+        return "mmHg"
+
+    @property
+    def icon(self):
+        """Return the icon."""
+        return 'mdi:water-circle'
+
+    @util.Throttle(MIN_TIME_BETWEEN_SCANS, MIN_TIME_BETWEEN_UPDATES)
+    def update(self):
+        """Extracts the relevant data points for from the Fitness API."""
+        value = 0
+        for point in self._get_dataset(self.DATA_SOURCE)["point"]:
+            if int(point["startTimeNanos"]) > _today_dataset_start():
+                value = point['value'][1]['fpVal']
+
+        self._last_updated = time.time()
+        self._state = value
+        _LOGGER.debug("Blood pressure DIA  %s", self._state)
+        self._attributes = {}

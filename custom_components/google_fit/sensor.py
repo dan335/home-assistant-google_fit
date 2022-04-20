@@ -181,15 +181,16 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
     client = _get_client(token_file)
     name = config.get(const.CONF_NAME)
     add_devices([GoogleFitWeightSensor(client, name),
-        GoogleFitHeartRateSensor(client, name),
-        GoogleFitHeightSensor(client, name),
-        GoogleFitStepsSensor(client, name),
-        GoogleFitSleepSensor(client, name),
-        GoogleFitMoveTimeSensor(client, name),
-        GoogleFitCaloriesSensor(client, name),
+        # GoogleFitHeartRateSensor(client, name),
+        # GoogleFitHeightSensor(client, name),
+        # GoogleFitStepsSensor(client, name),
+        # GoogleFitSleepSensor(client, name),
+        # GoogleFitMoveTimeSensor(client, name),
+        # GoogleFitCaloriesSensor(client, name),
         GoogleFitBloodPresureSysSensor(client, name),
         GoogleFitBloodPresureDiaSensor(client, name),
-        GoogleFitDistanceSensor(client, name)], True)
+        # GoogleFitDistanceSensor(client, name)
+        ], True)
 
 
 class GoogleFitSensor(entity.Entity):

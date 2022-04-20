@@ -66,13 +66,14 @@ BP_DIA = 'blood pressure DIA'
 # Endpoint scopes required for the sensor.
 # Read more: https://developers.google.com/fit/rest/v1/authorization
 
-SCOPES = ['https://www.googleapis.com/auth/fitness.activity.read',
-    'https://www.googleapis.com/auth/fitness.body.read',
-    'https://www.googleapis.com/auth/fitness.body.write',
-    'https://www.googleapis.com/auth/fitness.heart_rate.read',
-    'https://www.googleapis.com/auth/fitness.location.read',
-    'https://www.googleapis.com/auth/fitness.nutrition.read',
-    'https://www.googleapis.com/auth/fitness.sleep.read',
+SCOPES = [
+    # 'https://www.googleapis.com/auth/fitness.activity.read',
+    # 'https://www.googleapis.com/auth/fitness.body.read',
+    # 'https://www.googleapis.com/auth/fitness.body.write',
+    # 'https://www.googleapis.com/auth/fitness.heart_rate.read',
+    # 'https://www.googleapis.com/auth/fitness.location.read',
+    # 'https://www.googleapis.com/auth/fitness.nutrition.read',
+    # 'https://www.googleapis.com/auth/fitness.sleep.read',
     'https://www.googleapis.com/auth/fitness.blood_pressure.read',
     ]
 
@@ -180,7 +181,8 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
     token_file = hass.config.path(TOKEN_FILE)
     client = _get_client(token_file)
     name = config.get(const.CONF_NAME)
-    add_devices([GoogleFitWeightSensor(client, name),
+    add_devices([
+        # GoogleFitWeightSensor(client, name),
         # GoogleFitHeartRateSensor(client, name),
         # GoogleFitHeightSensor(client, name),
         # GoogleFitStepsSensor(client, name),
